@@ -1,7 +1,6 @@
 "use client";
 
 import { useState, FormEvent } from "react";
-import Image from "next/image";
 
 export default function Home() {
   const [imageFile, setImageFile] = useState<File | null>(null);
@@ -41,6 +40,7 @@ export default function Home() {
         setResponseMessage(`Error: ${errorData.error}`);
       }
     } catch (error) {
+      console.error("An error occurred while uploading the image:", error);
       setResponseMessage("An error occurred while uploading the image.");
     } finally {
       setLoading(false); // Stop loading

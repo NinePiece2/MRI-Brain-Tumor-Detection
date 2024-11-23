@@ -1,5 +1,5 @@
 import { NextApiRequest, NextApiResponse } from "next";
-import formidable from "formidable";
+import formidable, { Fields, Files } from "formidable";
 import fs from "fs";
 import FormData from "form-data";
 import fetch from "node-fetch";
@@ -12,22 +12,21 @@ export const config = {
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
   if (req.method === "POST") {
-    const form = formidable({ multiples: false } as any); 
+    const form = formidable({ multiples: false });
 
     // Parse the incoming request
-    form.parse(req, async (err, fields, files) => {
+    form.parse(req, async (err: Error | null, fields: Fields, files: Files) => {
       if (err) {
         console.error("Error parsing the form data", err);
         return res.status(500).json({ error: "Error parsing form data." });
       }
 
-      //console.log('Parsed Files:', files);
-
       try {
         // Correctly access the image file
         const imageFile = Array.isArray(files.image) ? files.image[0] : files.image;
 
-        if (!imageFile || !imageFile.filepath) {
+        // Ensure the imageFile is properly typed and not undefined
+        if (!imageFile || typeof imageFile.filepath !== "string" || !imageFile.filepath) {
           return res.status(400).json({ error: "No image file provided" });
         }
 
@@ -38,8 +37,8 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
         // Make the request to the Flask API
         const response = await fetch("https://127.0.0.1:443/classification", {
           method: "POST",
-          body: formData as any,
-          headers: formData.getHeaders(), 
+          body: formData,
+          headers: formData.getHeaders(),
         });
 
         if (response.ok) {
