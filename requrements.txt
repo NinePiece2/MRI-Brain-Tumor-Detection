@@ -1,0 +1,11 @@
+ipykernel=
+ipython=
+numpy=
+pandas=
+matplotlib=
+tensorflow=
+scikit-learn=
+nibabel=
+python-dotenv=
+opencv-python=
+flask=
