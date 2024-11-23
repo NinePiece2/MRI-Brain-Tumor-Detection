@@ -4,6 +4,8 @@ import fs from "fs";
 import FormData from "form-data";
 import fetch from "node-fetch";
 
+var baseURL = process.env.BASE_URL;
+
 export const config = {
   api: {
     bodyParser: false,
@@ -35,7 +37,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
         formData.append("image", fs.createReadStream(imageFile.filepath), imageFile.originalFilename ?? ""); // Stream file to Flask
 
         // Make the request to the Flask API
-        const response = await fetch("https://127.0.0.1:443/classification", {
+        const response = await fetch(`${baseURL}/classification`, {
           method: "POST",
           body: formData,
           headers: formData.getHeaders(),

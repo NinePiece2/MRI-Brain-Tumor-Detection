@@ -76,3 +76,6 @@ jobs:
 
       - name: Deploy with Docker Compose
         run: docker-compose up -d
+
+      - name: Remove unused Docker images
+        run: docker image prune -af
