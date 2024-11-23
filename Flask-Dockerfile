@@ -1,16 +1,28 @@
 # We will use python:3.9-bookworm as the base image for building the Flask container
 FROM amd64/python:3.9-bookworm
+
 # ENVVAR for the model
 ENV MODEL_PATH=/app/models
+
 # Specifies the working directory where the Docker container will run
 WORKDIR /app
+
+
 # Copying all the application files to the working directory
 COPY API/ .
 COPY requirements.txt .
 COPY models/classification_model.h5 models/classification_model.h5
+
 # Install all the dependencies required to run the Flask application
 RUN pip install --no-cache-dir -r requirements.txt
+
+# Install dependency libGL for OpenCV
+RUN apt-get update && apt-get install -y \
+    libgl1-mesa-glx \
+    && rm -rf /var/lib/apt/lists/*
+
 # Expose the Docker container for the application to run on port 443 with ssl/HTTPS
 EXPOSE 443
+
 # The command required to run the Dockerized application
 CMD ["python", "/app/app.py"]
