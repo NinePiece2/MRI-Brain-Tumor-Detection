@@ -57,6 +57,6 @@ jobs:
         uses: docker/build-push-action@v5
         with:
           context: .
-          file: ./Flask-Dockerfile
+          file: ./NextJS-Dockerfile
           push: true
           tags: ${{ secrets.DOCKER_USERNAME }}/mri-brain-tumor-detection:ui
