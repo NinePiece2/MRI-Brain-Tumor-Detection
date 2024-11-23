@@ -6,3 +6,4 @@ scikit-learn==1.5.2
 nibabel==5.3.2
 python-dotenv==1.0.1
 opencv-python==4.10.0.84
+Flask==3.1.0
