@@ -28,7 +28,7 @@ jobs:
         env:
             GITHUB_TOKEN: ${{ secrets.GH_TOKEN }}
         run: |
-            gh release download latest --repo NinePiece2/MRI-Brain-Tumor-Detection --pattern "classification_model.h5" --dir models
+            gh release download --repo NinePiece2/MRI-Brain-Tumor-Detection --pattern "classification_model.h5" --dir models
 
       - name: Build and push
         uses: docker/build-push-action@v5
