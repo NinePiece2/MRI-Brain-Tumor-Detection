@@ -7,7 +7,6 @@ ENV MODEL_PATH=/app/models
 # Specifies the working directory where the Docker container will run
 WORKDIR /app
 
-
 # Copying all the application files to the working directory
 COPY API/ .
 COPY requirements.txt .
