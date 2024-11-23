@@ -60,3 +60,19 @@ jobs:
           file: ./NextJS-Dockerfile
           push: true
           tags: ${{ secrets.DOCKER_USERNAME }}/mri-brain-tumor-detection:ui
+  
+  Deploy:
+    runs-on: self-hosted
+    needs: [Build-API, Build-UI]
+    steps:
+      - name: Check out code
+        uses: actions/checkout@v4
+
+      - name: Pull latest Docker images
+        run: docker-compose pull
+
+      - name: Remove Old Continer
+        run: docker-compose down
+
+      - name: Deploy with Docker Compose
+        run: docker-compose up -d

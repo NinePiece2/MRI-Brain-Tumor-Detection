@@ -1,0 +1,18 @@
+version: '3.8'
+
+services:
+  api:
+    image: ninepiece2/mri-brain-tumor-detection:api
+    container_name: MRI-Brain-Tumor-Detection-API
+    ports:
+      - "443:443"
+    restart: always
+  
+  ui:
+    image: ninepiece2/mri-brain-tumor-detection:ui
+    container_name: MRI-Brain-Tumor-Detection-UI
+    ports:
+      - "443:443"
+    environment:
+      - NODE_ENV: production
+    restart: always
