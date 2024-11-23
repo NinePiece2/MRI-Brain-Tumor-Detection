@@ -4,7 +4,7 @@ import fs from "fs";
 import FormData from "form-data";
 import fetch from "node-fetch";
 
-var baseURL = process.env.BASE_URL;
+const baseURL = process.env.BASE_URL;
 
 export const config = {
   api: {
