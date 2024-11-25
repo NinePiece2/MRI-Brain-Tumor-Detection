@@ -33,9 +33,9 @@ export default function RootLayout({
               <span className="ml-3 text-xl">Brain Tumor Detection</span>
             </Link>
             <nav className="md:mr-auto md:ml-4 md:py-1 md:pl-4 md:border-l md:border-gray-400 flex flex-wrap items-center text-base justify-center">
-              <Link href="/" className="mr-5">Classification</Link>
+              <Link href="/" className="mr-5">Home</Link>
+              <Link href="/Classification" className="mr-5">Classification</Link>
               <Link href="/Segmentation" className="mr-5">Segmentation</Link>
-              <Link href="/About" className="mr-5">About</Link>
             </nav>
           </div>
         </header>

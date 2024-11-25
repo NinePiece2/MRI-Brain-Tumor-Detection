@@ -4,13 +4,16 @@ FROM amd64/python:3.9-bookworm
 # ENVVAR for the model
 ENV MODEL_PATH=/app/models
 
+# # ENVVAR to disable the TensorFlow optimizations for compatibility with the CPU
+# ENV TF_ENABLE_ONEDNN_OPTS=0
+
 # Specifies the working directory where the Docker container will run
 WORKDIR /app
 
 # Copying all the application files to the working directory
 COPY API/ .
 COPY requirements.txt .
-COPY models/classification_model.h5 models/classification_model.h5
+COPY models models
 
 # Install all the dependencies required to run the Flask application
 RUN pip install --no-cache-dir -r requirements.txt

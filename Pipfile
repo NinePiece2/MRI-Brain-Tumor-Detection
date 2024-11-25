@@ -9,11 +9,12 @@ ipython = "*"
 numpy = "*"
 pandas = "*"
 matplotlib = "*"
-tensorflow = "*"
 scikit-learn = "*"
 nibabel = "*"
 python-dotenv = "*"
 opencv-python = "*"
+tensorflow = "==2.15.0"
+tifffile = "*"
 
 [dev-packages]
 

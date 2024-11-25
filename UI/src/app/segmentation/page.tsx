@@ -4,7 +4,7 @@ import { useState, FormEvent } from "react";
 
 export default function Home() {
   const [imageFile, setImageFile] = useState<File | null>(null);
-  const [responseMessage, setResponseMessage] = useState<string | null>(null);
+  const [segmentedImageUrl, setSegmentedImageUrl] = useState<string | null>(null);
   const [loading, setLoading] = useState<boolean>(false);
   const [showModal, setShowModal] = useState<boolean>(false);
 
@@ -17,7 +17,8 @@ export default function Home() {
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
     if (!imageFile) {
-      setResponseMessage("Please select an image to upload.");
+      setSegmentedImageUrl(null);
+      setShowModal(true);
       return;
     }
 
@@ -27,21 +28,23 @@ export default function Home() {
     setLoading(true); // Start loading
 
     try {
-      const response = await fetch("/api/uploadImageForClassification", {
+      const response = await fetch("/api/uploadImageForSegmentation", {
         method: "POST",
         body: formData,
       });
 
       if (response.ok) {
-        const data = await response.json();
-        setResponseMessage(`Prediction: ${data.prediction}`);
+        const blob = await response.blob();
+        const imageUrl = URL.createObjectURL(blob);
+        setSegmentedImageUrl(imageUrl);
       } else {
+        setSegmentedImageUrl(null);
         const errorData = await response.json();
-        setResponseMessage(`Error: ${errorData.error}`);
+        console.error("Error from segmentation API:", errorData);
       }
     } catch (error) {
-      console.error("An error occurred while uploading the image:", error);
-      setResponseMessage("An error occurred while uploading the image.");
+      console.error("An error occurred while processing the image:", error);
+      setSegmentedImageUrl(null);
     } finally {
       setLoading(false); // Stop loading
       setShowModal(true); // Show modal with result
@@ -50,17 +53,17 @@ export default function Home() {
 
   const closeModal = () => {
     setShowModal(false);
-    setResponseMessage(null);
+    setSegmentedImageUrl(null);
   };
 
   return (
-    <div className="grid grid-rows-[20px_1fr_20px] items-center justify-items-center min-h-screen p-8 pb-20 gap-16 sm:p-20 relative">
+    <div className="grid grid-rows-[20px_1fr_20px] items-center justify-items-center p-8 pb-20 gap-16 sm:p-20 relative">
       <main className="flex flex-col gap-8 row-start-2 items-center sm:items-start">
         <form
           onSubmit={handleSubmit}
           className="flex flex-col gap-6 items-center p-8 border rounded-lg shadow-lg bg-white"
         >
-          <h1 className="text-2xl font-semibold">Upload an Image for Classification</h1>
+          <h1 className="text-2xl font-semibold">Upload an Image for Segmentation</h1>
           <input
             type="file"
             accept="image/*"
@@ -107,8 +110,16 @@ export default function Home() {
       {showModal && (
         <div className="fixed inset-0 bg-gray-800 bg-opacity-75 flex items-center justify-center z-50">
           <div className="bg-white p-8 rounded-lg shadow-lg max-w-sm w-full text-center">
-            <h2 className="text-xl font-semibold mb-4">Classification Result</h2>
-            <p className="text-gray-700 mb-6">{responseMessage}</p>
+            <h2 className="text-xl font-semibold mb-4">Segmentation Result</h2>
+            {segmentedImageUrl ? (
+              <img
+                src={segmentedImageUrl}
+                alt="Segmented result"
+                className="mb-6 max-w-full h-auto border rounded-md shadow-md justify-self-center"
+              />
+            ) : (
+              <p className="text-gray-700 mb-6">An error occurred during segmentation.</p>
+            )}
             <button
               onClick={closeModal}
               className="bg-green-500 text-white py-2 px-4 rounded-md hover:bg-green-600 transition duration-200"
