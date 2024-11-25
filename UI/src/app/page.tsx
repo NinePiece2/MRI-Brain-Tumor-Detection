@@ -1,7 +1,5 @@
 "use client";
 
-import { useState, FormEvent } from "react";
-
 export default function Home() {
   return (
     <div className="items-center justify-items-center relative pt-16">
