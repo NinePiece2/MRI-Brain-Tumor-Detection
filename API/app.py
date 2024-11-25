@@ -20,7 +20,7 @@ SEGMENTATION_IMAGE_SIZE = 128
 # Load the model
 model_path = os.environ['MODEL_PATH']
 classification_model = load_model(f'{model_path}/classification_model.h5')
-segmentation_model = load_model(f'{model_path}/segmentation_model2.h5')
+segmentation_model = load_model(f'{model_path}/segmentation_model.h5')
 
 def test_image_classification(model, image):
     # Preprocess the input image
