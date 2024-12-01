@@ -4,6 +4,8 @@
 
 - [Installation Instructions](#installation-instructions)
   - [Table of Contents](#table-of-contents)
+  - [Requirements](#requirements)
+  - [Dataset Location](#dataset-location)
   - [Training Compile/Run Intructions](#training-compilerun-intructions)
   - [Application Compile/Run Instructions](#application-compilerun-instructions)
     - [API](#api)
@@ -14,8 +16,23 @@
     - [Deploy the Application](#deploy-the-application)
   - [Automated Deployment Instructions](#automated-deployment-instructions)
 
+## Requirements
+
+- Python [3.9.13](https://www.python.org/downloads/release/python-3913/)
+- [Node.js](https://nodejs.org/en/download/prebuilt-installer) 20.14.0 or higher
+
+## Dataset Location
+
+The two datasets used can be located at the following links:
+
+- For Classification [Brain Tumor MRI Dataset](https://www.kaggle.com/datasets/masoudnickparvar/brain-tumor-mri-dataset)
+- For Segmentation [Brain MRI segmentation Dataset](https://www.kaggle.com/datasets/mateuszbuda/lgg-mri-segmentation)
+
 ## Training Compile/Run Intructions
 
+- Download the datasets from the links provided above and extract them to a directory on your local machine
+- In a ```.env``` file in the root directory add the variables ```CLASSIFICATION_DATASET_PATH``` and ```SEGMENTATION_DATASET_PATH``` to the path of the directories containing the datasets.
+- Run ```pipenv install``` to install the required packages
 - Run ```pipenv shell```
 - In the Python Notebook select the pipenv environment, or use the command line to run the notebook.
 - Run required blocks of code
@@ -24,8 +41,10 @@
 
 ### API
 
+- In a ```.env``` file in the root directory add the variable ```MODEL_PATH``` to the path of the directory containing the models
+- Run ```pipenv install``` to install the required packages
 - Run ```pipenv shell```
-- Enter the API directory in one terminal window using ```cd API``` 
+- Enter the API directory in one terminal window using ```cd API```
 - Run the API using ```python app.py```
   
 ### UI
