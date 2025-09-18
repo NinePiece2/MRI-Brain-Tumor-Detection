@@ -1,0 +1,29 @@
+name: CD Pipeline
+
+on:
+  workflow_dispatch:
+  repository_dispatch:
+    types: [build-completed]
+  
+concurrency:
+  group: deploy-environment
+  cancel-in-progress: false  # Prevents new deployments from canceling an ongoing one
+
+jobs:
+  Deploy:
+    runs-on: self-hosted
+    steps:
+      - name: Check out code
+        uses: actions/checkout@v4
+
+      - name: Pull latest Docker images
+        run: docker-compose pull
+
+      - name: Remove Old Continer
+        run: docker-compose down
+
+      - name: Deploy with Docker Compose
+        run: docker-compose up -d
+
+      - name: Remove unused Docker images
+        run: docker image prune -af

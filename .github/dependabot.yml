@@ -1,0 +1,40 @@
+version: 2
+updates:
+  - package-ecosystem: "pip"
+    directory: "/"
+    schedule:
+      interval: "daily"
+      time: "11:00"
+      timezone: "America/Toronto"
+    commit-message:
+      prefix: "deps(pip)"
+    groups:
+      api-dependencies:
+        patterns:
+          - "*"
+
+  - package-ecosystem: "npm"
+    directory: "/UI"
+    schedule:
+      interval: "daily"
+      time: "11:00"
+      timezone: "America/Toronto"
+    commit-message:
+      prefix: "deps(npm)"
+    groups:
+      ui-dependencies:
+        patterns:
+          - "*"
+
+  - package-ecosystem: "github-actions"
+    directory: "/"
+    schedule:
+      interval: "daily"
+      time: "11:00"
+      timezone: "America/Toronto"
+    commit-message:
+      prefix: "deps(github-actions)"
+    groups:
+      github-actions:
+        patterns:
+          - "*"
