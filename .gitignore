@@ -1,3 +1,5 @@
 .env
 *.h5
 *.pkl
+/models
+.DS_Store
