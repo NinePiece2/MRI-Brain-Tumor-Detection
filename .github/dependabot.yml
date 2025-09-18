@@ -12,6 +12,8 @@ updates:
       api-dependencies:
         patterns:
           - "*"
+    ignore:
+      - dependency-name: "tensorflow"
 
   - package-ecosystem: "npm"
     directory: "/UI"
