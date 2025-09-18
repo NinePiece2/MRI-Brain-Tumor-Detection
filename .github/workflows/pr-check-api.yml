@@ -20,6 +20,19 @@ jobs:
         with:
           python-version: "3.9"
 
+      - name: Install GitHub CLI
+        run: sudo apt-get install gh -y
+
+      - name: Download Release Models
+        env:
+          GITHUB_TOKEN: ${{ secrets.GH_TOKEN }}
+        run: |
+          mkdir -p models
+          gh release download --repo NinePiece2/MRI-Brain-Tumor-Detection \
+            --pattern "classification_model.h5" \
+            --pattern "segmentation_model.h5" \
+            --dir models
+
       - name: Build Docker image
         run: docker build -t tumor-api -f Flask-Dockerfile .
 
