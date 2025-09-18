@@ -33,7 +33,7 @@ jobs:
 
       - name: Download Release Asset from Latest Release
         env:
-            GITHUB_TOKEN: ${{ secrets.GH_TOKEN }}
+            GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
             gh release download --repo NinePiece2/MRI-Brain-Tumor-Detection --pattern "classification_model.h5" --pattern "segmentation_model.h5" --dir models
 
