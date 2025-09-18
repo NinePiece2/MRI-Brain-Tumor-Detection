@@ -1,5 +1,5 @@
 # Use the official Node.js 18 image as the base image
-FROM node:18-alpine
+FROM node:22-alpine as Build
 
 # Set the working directory in the container
 WORKDIR /app
@@ -7,17 +7,24 @@ WORKDIR /app
 # Copy package.json and package-lock.json into the container
 COPY UI/package.json UI/package-lock.json ./
 
-# Install dependencies
-RUN npm install
+RUN npm ci
 
-# Copy the rest of the application code into the container
+# Disable Next.js telemetry
+ENV NEXT_TELEMETRY_DISABLED=1
+
 COPY UI .
-
-# Build the Next.js application
 RUN npm run build
+RUN npm prune --omit=dev 
 
-# Expose the port the app runs on
+FROM node:22-alpine AS deploy
+
+WORKDIR /app
+
+COPY --from=build /app/package.json ./
+COPY --from=build /app/package-lock.json ./
+COPY --from=build /app/node_modules ./node_modules
+COPY --from=build /app/.next ./.next
+COPY --from=build /app/public ./public
+
 EXPOSE 3000
-
-# Start the application
 CMD ["npm", "start"]
