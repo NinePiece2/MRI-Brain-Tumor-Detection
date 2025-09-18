@@ -1,0 +1,35 @@
+name: PR Build & Test API
+
+on:
+  pull_request:
+    branches:
+      - main
+    paths:
+      - "API/**"
+
+jobs:
+  build-and-test:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.9"
+
+      - name: Build Docker image
+        run: docker build -t tumor-api -f Flask-Dockerfile .
+
+      - name: Run Docker container
+        run: |
+          docker run -d -p 8443:443 --name tumor-api tumor-api
+          sleep 15 # wait for Flask to start
+
+      - name: Install test dependencies
+        run: pip install requests pytest
+
+      - name: Run API tests
+        run: pytest Tests/
