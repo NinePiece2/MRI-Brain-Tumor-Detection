@@ -6,6 +6,10 @@ on:
       - main
     paths:
       - "API/**"
+      - Flask-Dockerfile
+      - requirements.txt
+      - Pipfile
+      - Pipfile.lock
 
 jobs:
   build-and-test:
