@@ -14,6 +14,7 @@ updates:
           - "*"
     ignore:
       - dependency-name: "tensorflow"
+      - dependency-name: "numpy"
 
   - package-ecosystem: "npm"
     directory: "/UI"
