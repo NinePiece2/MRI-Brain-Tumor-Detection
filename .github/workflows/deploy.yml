@@ -1,17 +1,19 @@
-name: CD Pipeline
+name: Kubernetes Deploy CD
 
 on:
-  workflow_dispatch:
   repository_dispatch:
     types: [build-completed]
-  
+  workflow_dispatch:
+
 concurrency:
   group: deploy-environment
   cancel-in-progress: false  # Prevents new deployments from canceling an ongoing one
 
 jobs:
-  Deploy:
+  deploy:
     runs-on: self-hosted
+    env:
+      KUBECONFIG: /root/.kube/config
     steps:
       - name: Check for Running Deployments
         env:
@@ -24,17 +26,93 @@ jobs:
           fi
         shell: bash
 
-      - name: Check out code
+      - name: Checkout code
         uses: actions/checkout@v5
 
-      - name: Pull latest Docker images
-        run: docker-compose pull
+      - name: Wait for all builds to complete
+        uses: actions/github-script@v8
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          script: |
+            const checkRuns = await github.rest.checks.listForRef({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              ref: context.ref,
+            });
 
-      - name: Remove Old Continer
-        run: docker-compose down
+            const builds = checkRuns.data.check_runs.filter(check => check.name.includes("build"));
+            
+            console.log("Waiting for all builds:", builds.map(b => b.name));
 
-      - name: Deploy with Docker Compose
-        run: docker-compose up -d
+            let allCompleted = false;
+            while (!allCompleted) {
+              await new Promise(resolve => setTimeout(resolve, 10000)); // Wait 10s before retrying
 
-      - name: Remove unused Docker images
-        run: docker image prune -af
+              const updatedChecks = await github.rest.checks.listForRef({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                ref: context.ref,
+              });
+
+              const updatedBuilds = updatedChecks.data.check_runs.filter(check => check.name.includes("build"));
+              allCompleted = updatedBuilds.every(b => b.status === "completed");
+
+              console.log("Current statuses:", updatedBuilds.map(b => `${b.name}: ${b.status}`));
+            }
+
+            console.log("All builds completed!");
+
+      - name: Create Deployment
+        id: deployment
+        uses: chrnorm/deployment-action@v2
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          environment: production
+          description: "Deploy commit ${{ github.sha }} to Kubernetes"
+          transient-environment: false
+          production-environment: true
+      
+      - name: Mark Deployment as In Progress
+        uses: chrnorm/deployment-status@v2
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          state: in_progress
+          deployment-id: ${{ steps.deployment.outputs.deployment_id }}
+
+      - name: Update Kubernetes Deployment
+        run: |
+          kubectl set image deployment/mri-brain-tumor-detection-ui-deployment \
+            mri-brain-tumor-detection-ui=${{ secrets.DOCKER_USERNAME }}/mri-brain-tumor-detection:ui \
+            mri-brain-tumor-detection-nginx=nginx:latest \
+            -n mri-brain-tumor-detection
+
+          kubectl set image deployment/mri-brain-tumor-detection-api-deployment \
+            mri-brain-tumor-detection-api=${{ secrets.DOCKER_USERNAME }}/mri-brain-tumor-detection:api \
+            -n mri-brain-tumor-detection
+
+          kubectl annotate deployment mri-brain-tumor-detection-ui-deployment \
+            kubernetes.io/change-cause="Deployed commit ${{ github.sha }} from branch ${{ github.ref_name }} via GitHub Actions run https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}. Updated image: UI=${{ secrets.DOCKER_USERNAME }}/mri-brain-tumor-detection:ui, NGINX=nginx:latest" \
+            --overwrite -n mri-brain-tumor-detection
+
+          kubectl annotate deployment mri-brain-tumor-detection-api-deployment \
+            kubernetes.io/change-cause="Deployed commit ${{ github.sha }} from branch ${{ github.ref_name }} via GitHub Actions run https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}. Updated image: API=${{ secrets.DOCKER_USERNAME }}/mri-brain-tumor-detection:api" \
+            --overwrite -n mri-brain-tumor-detection
+
+          kubectl rollout restart deployment/mri-brain-tumor-detection-ui-deployment -n mri-brain-tumor-detection
+          kubectl rollout restart deployment/mri-brain-tumor-detection-api-deployment -n mri-brain-tumor-detection
+
+      - name: Mark Deployment as Successful
+        if: success()
+        uses: chrnorm/deployment-status@v2
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          state: success
+          deployment-id: ${{ steps.deployment.outputs.deployment_id }}
+
+      - name: Mark Deployment as Failed
+        if: failure()
+        uses: chrnorm/deployment-status@v2
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          state: failure
+          deployment-id: ${{ steps.deployment.outputs.deployment_id }}
