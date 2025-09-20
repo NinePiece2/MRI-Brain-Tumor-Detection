@@ -16,6 +16,8 @@ updates:
       - dependency-name: "tensorflow"
       - dependency-name: "numpy"
       - dependency-name: "opencv-python"
+    reviewers:
+      - "ninepiece2"
 
   - package-ecosystem: "npm"
     directory: "/UI"
@@ -29,6 +31,8 @@ updates:
       ui-dependencies:
         patterns:
           - "*"
+    reviewers:
+      - "ninepiece2"
 
   - package-ecosystem: "github-actions"
     directory: "/"
@@ -42,3 +46,5 @@ updates:
       github-actions:
         patterns:
           - "*"
+    reviewers:
+      - "ninepiece2"
