@@ -910,12 +910,12 @@
         },
         "nibabel": {
             "hashes": [
-                "sha256:0bdca6503b1c784b446c745a4542367de7756cfba0d72143b91f9ffb78be569b",
-                "sha256:52970a5a8a53b1b55249cba4d9bcfaa8cc57e3e5af35a29d7352237e8680a6f8"
+                "sha256:8d2006b70d727fd0a798a88ae5fd64339741f436fcfc83d6ea3256cdbc51c5b7",
+                "sha256:e8b17423ee8464da3b69e6a15799eb19f2350a7d38377026d527b6b84938adac"
             ],
             "index": "pypi",
             "markers": "python_version >= '3.9'",
-            "version": "==5.3.2"
+            "version": "==5.3.3"
         },
         "numpy": {
             "hashes": [
