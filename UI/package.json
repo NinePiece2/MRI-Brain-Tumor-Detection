@@ -21,7 +21,7 @@
     "@eslint/eslintrc": "^3.3.3",
     "@tailwindcss/postcss": "^4.1.17",
     "@types/formidable": "^3.4.6",
-    "@types/node": "^24",
+    "@types/node": "^25",
     "@types/react": "^19",
     "@types/react-dom": "^19",
     "autoprefixer": "^10.4.22",
