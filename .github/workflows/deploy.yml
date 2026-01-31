@@ -83,7 +83,6 @@ jobs:
         run: |
           kubectl set image deployment/mri-brain-tumor-detection-ui-deployment \
             mri-brain-tumor-detection-ui=${{ secrets.DOCKER_USERNAME }}/mri-brain-tumor-detection:ui \
-            mri-brain-tumor-detection-nginx=nginx:latest \
             -n mri-brain-tumor-detection
 
           kubectl set image deployment/mri-brain-tumor-detection-api-deployment \
@@ -91,7 +90,7 @@ jobs:
             -n mri-brain-tumor-detection
 
           kubectl annotate deployment mri-brain-tumor-detection-ui-deployment \
-            kubernetes.io/change-cause="Deployed commit ${{ github.sha }} from branch ${{ github.ref_name }} via GitHub Actions run https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}. Updated image: UI=${{ secrets.DOCKER_USERNAME }}/mri-brain-tumor-detection:ui, NGINX=nginx:latest" \
+            kubernetes.io/change-cause="Deployed commit ${{ github.sha }} from branch ${{ github.ref_name }} via GitHub Actions run https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}. Updated image: UI=${{ secrets.DOCKER_USERNAME }}/mri-brain-tumor-detection:ui" \
             --overwrite -n mri-brain-tumor-detection
 
           kubectl annotate deployment mri-brain-tumor-detection-api-deployment \
