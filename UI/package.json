@@ -9,7 +9,7 @@
     "lint": "eslint"
   },
   "dependencies": {
-    "dotenv": "^17.2.3",
+    "dotenv": "^17.2.4",
     "form-data": "^4.0.5",
     "formidable": "^3.5.4",
     "next": "16.1.6",
