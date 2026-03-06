@@ -38,7 +38,7 @@ jobs:
             gh release download --repo NinePiece2/MRI-Brain-Tumor-Detection --pattern "classification_model.h5" --pattern "segmentation_model.h5" --dir models
 
       - name: Build and push
-        uses: docker/build-push-action@v6
+        uses: docker/build-push-action@v7
         with:
           context: .
           file: ./Flask-Dockerfile
