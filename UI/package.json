@@ -18,7 +18,7 @@
     "react-dom": "19.2.4"
   },
   "devDependencies": {
-    "@eslint/eslintrc": "^3.3.4",
+    "@eslint/eslintrc": "^3.3.5",
     "@tailwindcss/postcss": "^4.2.1",
     "@types/formidable": "^3.5.0",
     "@types/node": "^25",
