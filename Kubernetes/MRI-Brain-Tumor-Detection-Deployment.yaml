@@ -64,12 +64,32 @@ spec:
   selector:
     run: mri-brain-tumor-detection-ui-deployment
   ports:
-    - name: https
+    - name: http
       protocol: TCP
       port: 80
       targetPort: 3000
-      nodePort: 30006
-  type: LoadBalancer
+  type: ClusterIP
+
+---
+
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: mri-brain-tumor-detection-ingress
+  namespace: mri-brain-tumor-detection
+spec:
+  ingressClassName: haproxy
+  rules:
+    - host: mribraintumordetection.romitsagu.com
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: mri-brain-tumor-detection-service
+                port:
+                  number: 80
 
 ---
 
